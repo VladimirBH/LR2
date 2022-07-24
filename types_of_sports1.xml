@@ -1,0 +1,42 @@
+<data>
+    <type name="Плавание">
+        <stamina>На выносливость Большое</stamina>
+        <flexibility>На гибкость Большое</flexibility>
+        <power>На силу Большое</power>
+    </type>
+    <type name="Гребля">
+        <stamina>На выносливость Большое</stamina>
+        <flexibility>На гибкость Среднее</flexibility>
+        <power>На силу Большое</power>
+    </type>
+    <type name="Велосипед">
+        <stamina>На выносливость Большое</stamina>
+        <flexibility>На гибкость Среднее</flexibility>
+        <power>На силу Большое</power>
+    </type>
+    <type name="Гимнастика">
+        <stamina>На выносливость Среднее</stamina>
+        <flexibility>На гибкость Большое</flexibility>
+        <power>На силу Среднее</power>
+    </type>
+    <type name="Футбол">
+        <stamina>На выносливость Среднее</stamina>
+        <flexibility>На гибкость Среднее</flexibility>
+        <power>На силу Среднее</power>
+    </type>
+    <type name="Бег">
+        <stamina>На выносливость Большое</stamina>
+        <flexibility>На гибкость Среднее</flexibility>
+        <power>На силу Среднее</power>
+    </type>
+    <type name="Поднятие тяжестей">
+        <stamina>На выносливость Лёгкое</stamina>
+        <flexibility>На гибкость Лёгкое</flexibility>
+        <power>На силу Большое</power>
+    </type>
+    <type name="Ходьба">
+        <stamina>На выносливость Среднее</stamina>
+        <flexibility>На гибкость Лёгкое</flexibility>
+        <power>На силу Лёгкое</power>
+    </type>
+<type name="Член"><stamina>На выносливость Лёгкое</stamina><flexibility>На гибкость Лёгкое</flexibility><power>На силу Лёгкое</power></type></data>

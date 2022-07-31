@@ -38,7 +38,7 @@ class MainApp(Tk):
 		def onAddClick(id_tab):
 			res = self.onAdd(id_tab)
 			if id_tab == 0:
-				treeview1.insert(parent='',index='end',text='',values=(res))
+				treeview1.insert(parent='',index='end', text='', values=(res,))
 			elif id_tab == 1:
 				treeview2.insert(parent='',index='end',text='',values=(res.attrib['if'],res.attrib['else']))
 			elif id_tab == 2:
@@ -47,8 +47,7 @@ class MainApp(Tk):
     
 		def onDeleteClick(id_tab):
 			if id_tab == 0:
-				value = treeview1.item(treeview1.selection()[0], option="values")
-				list_of_attribs.remove(values[0])
+				#value = treeview1.item(treeview1.selection()[0], option="values")
 				treeview1.delete(treeview1.selection()[0])
 			elif id_tab == 1:
 				values = treeview2.item(treeview2.selection()[0], option="values")
@@ -59,14 +58,17 @@ class MainApp(Tk):
 				treeview3.delete(treeview3.selection()[0])
 				self.onDelete(id_tab, values)
 	
-   
+ 
+		def onSubmitClick():
+			self.onSubmit(treeview1)
+			
 		add_button_tab1 = ttk.Button(tab1, text="Добавить", command=partial(onAddClick, 0))
 		add_button_tab1.grid(row=1, column=0)
 
 		delete_button_tab1 = ttk.Button(tab1, text="Удалить", command=partial(onDeleteClick, 0))
 		delete_button_tab1.grid(row=2, column=0)
 
-		submit_button_tab1 = ttk.Button(tab1, text="Подобрать вид спорта", command=self.onSubmitClick)
+		submit_button_tab1 = ttk.Button(tab1, text="Подобрать вид спорта", command=onSubmitClick)
 		submit_button_tab1.grid(row=3, column=0)
 
 		treeview2 = ttk.Treeview(tab2)
@@ -111,28 +113,26 @@ class MainApp(Tk):
 		delete_button_tab3 = ttk.Button(tab3, text="Удалить", command=partial(onDeleteClick, 2))
 		delete_button_tab3.grid(row=2, column=0)
 
-		self.loadXmlRules(treeview2)
-		self.loadXmlSport(treeview3)
-	
-	def loadXmlRules(self, tab2):
-		tree = ET.parse('rules.xml')
-		rules = tree.getroot()
-		i = 0
-		for rule in rules:
-			tab2.insert(parent='',index='end',iid=i,text='',values=(rule.attrib['if'],rule.attrib['else']))
-			i += 1
-	
-	def loadXmlSport(self, tab3):
-		tree = ET.parse('types_of_sports.xml')
-		root = tree.getroot()
-		i = 0
-		for type_sport in root:
-			tab3.insert(parent='',index='end',iid=i,text='',values=(
-		type_sport.attrib['name'],
-		type_sport.find('stamina').text,
-		type_sport.find('flexibility').text,
-		type_sport.find('power').text))
-			i += 1
+		rules = self.loadXml('rules.xml')
+
+		for i in range (0, len(rules)-1):
+			treeview2.insert(parent='',index='end',iid=i,text='',values=(rules[i].attrib['if'],rules[i].attrib['else']))
+
+		sport_types = self.loadXml('types_of_sports.xml')
+
+		for i in range (0, len(sport_types)-1):
+			treeview3.insert(parent='',index='end',iid=i,text='',values=(
+			sport_types[i].attrib['name'],
+			sport_types[i].find('stamina').text,
+			sport_types[i].find('flexibility').text,
+			sport_types[i].find('power').text))
+
+
+	def loadXml(self, file_name: str):
+		tree = ET.parse(file_name)
+		return tree.getroot()
+
+    #Добавление элементов
     
 	def onAdd(self, id_tab):
 		add_window = Toplevel(self)
@@ -143,10 +143,10 @@ class MainApp(Tk):
    
 			result = None
 			def callback():
+				nonlocal result
 				if len(text_box.get()) == 0:
 					messagebox.showerror(message="Поле должно быть заполнено")
 					return
-				nonlocal result
 				result = text_box.get()
 				list_of_attribs.append(result)
 				add_window.destroy()
@@ -172,8 +172,8 @@ class MainApp(Tk):
 				tree = ET.parse('rules.xml')
 				root = tree.getroot()
 				attrib = { 
-              		'if': text_box_if.get(),
-					'else': text_box_else.get()
+              		'if': text_box_if.get().upper(),
+					'else': text_box_else.get().upper()
               	}
 				element = root.makeelement('rule', attrib)
 				root.append(element)
@@ -262,10 +262,45 @@ class MainApp(Tk):
 					root.remove(type)
 			tree.write('types_of_sports.xml', encoding="utf-8")
 
-	def onSubmitClick(self):
-		print('what')
-	
- 
+
+	def onSubmit(self, treeview: ttk.Treeview):
+		rules = self.loadXml('rules.xml')
+		sport_types = self.loadXml('types_of_sports.xml')
+		advices = []
+		for line in treeview.get_children():
+			for sign in treeview.item(line)['values']:
+				for rule in rules:
+					if rule.attrib['if'].lower() in sign.lower():
+						advices.append(rule.attrib['else'].lower())
+
+		suitable_sport = []
+		for advice in advices:
+			for sport_type in sport_types:
+				if "силу" in advice:
+					if sport_type.find('stamina').text.lower() in advice:
+						
+				
+				if sport_type.find('stamina').text.lower() in advices and sport_type.find('flexibility').text.lower() in advices and sport_type.find('power').text.lower() in advices:
+					suitable_sport.append(sport_type.attrib['name'])
+
+		self.windowResult(suitable_sport)
+
+
+	def windowResult(self, suitable_sport):
+		add_window = Toplevel(self)
+		add_window.title = "Подходящие виды спорта"
+		treeview = ttk.Treeview(add_window, columns=('name'))
+		treeview.column("#0", width=0)
+		treeview.column("name",anchor=CENTER, width=700)
+		treeview.grid(column=0, row=0) 
+
+		for sport_type in suitable_sport:
+			treeview.insert(parent='',index='end',text='',values=(sport_type,))
+
+		add_window.grab_set()
+		add_window.wait_window()
+
+
 if __name__ == "__main__":
 	main_app = MainApp()
 	main_app.mainloop()

@@ -47,7 +47,6 @@ class MainApp(Tk):
     
 		def onDeleteClick(id_tab):
 			if id_tab == 0:
-				#value = treeview1.item(treeview1.selection()[0], option="values")
 				treeview1.delete(treeview1.selection()[0])
 			elif id_tab == 1:
 				values = treeview2.item(treeview2.selection()[0], option="values")
@@ -274,14 +273,24 @@ class MainApp(Tk):
 						advices.append(rule.attrib['else'].lower())
 
 		suitable_sport = []
-		for advice in advices:
-			for sport_type in sport_types:
+		print(advices)
+		for sport_type in sport_types:
+			suit = 1
+			for advice in advices:
+				if "выносливость" in advice:
+					if sport_type.find('stamina').text.lower() not in advice:
+						suit -= 1
+						continue
+				if "гибкость" in advice:
+					if sport_type.find('flexibility').text.lower() not in advice:
+						suit -= 1
+						continue
 				if "силу" in advice:
-					if sport_type.find('stamina').text.lower() in advice:
-						
-				
-				if sport_type.find('stamina').text.lower() in advices and sport_type.find('flexibility').text.lower() in advices and sport_type.find('power').text.lower() in advices:
-					suitable_sport.append(sport_type.attrib['name'])
+					if sport_type.find('power').text.lower() not in advice:
+						suit -= 1
+						continue
+			if suit > 0:
+				suitable_sport.append(sport_type.attrib['name'])
 
 		self.windowResult(suitable_sport)
 

@@ -39,4 +39,4 @@
         <flexibility>На гибкость Лёгкое</flexibility>
         <power>На силу Лёгкое</power>
     </type>
-    </data>
+<type name="test"><stamina>На выносливость Лёгкое</stamina><flexibility>На гибкость Лёгкое</flexibility><power>На силу Лёгкое</power></type></data>

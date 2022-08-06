@@ -59,14 +59,16 @@ class MainApp(Tk):
 				treeview3.delete(treeview3.selection()[0])
 				self.onDelete(id_tab, values)
 	
-   
+		def onSubmirClick():
+			self.matchSport(treeview1)
+
 		add_button_tab1 = ttk.Button(tab1, text="Добавить", command=partial(onAddClick, 0))
 		add_button_tab1.grid(row=1, column=0)
 
 		delete_button_tab1 = ttk.Button(tab1, text="Удалить", command=partial(onDeleteClick, 0))
 		delete_button_tab1.grid(row=2, column=0)
 
-		submit_button_tab1 = ttk.Button(tab1, text="Подобрать вид спорта", command=self.onSubmitClick)
+		submit_button_tab1 = ttk.Button(tab1, text="Подобрать вид спорта", command=onSubmitClick)
 		submit_button_tab1.grid(row=3, column=0)
 
 		treeview2 = ttk.Treeview(tab2)
@@ -262,7 +264,7 @@ class MainApp(Tk):
 					root.remove(type)
 			tree.write('types_of_sports.xml', encoding="utf-8")
 
-	def onSubmitClick(self):
+	def matchSport(self, treeview):
 		print('what')
 	
  

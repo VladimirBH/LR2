@@ -3,6 +3,7 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
 from functools import partial
+from turtle import width
 import for_xml
 import xml.etree.ElementTree as ET
 
@@ -10,7 +11,7 @@ class MainApp(Tk):
         
     def __init__(self):
         super().__init__()
-        self.geometry('1000x500')  
+        self.title = ""  
         style = ttk.Style()
         style.theme_use('clam')
         tab_control = ttk.Notebook(self)
@@ -21,17 +22,17 @@ class MainApp(Tk):
         tab_control.add(tab2, text='Правила')  
         tab_control.add(tab3, text='Виды спорта')
         tab_control.grid(row=0)
+        style.configure("Treeview.Heading", background="grey")
 
-        treeview1 = ttk.Treeview(tab1, columns='name', selectmode='browse')
+        treeview1 = ttk.Treeview(tab1, selectmode='browse', columns='name', show='headings')
 
-        treeview1.grid(row=0, column=0)
+
         treeview1.column('name',anchor=CENTER, width=700)
 
         treeview1.heading('name',text="Признаки",anchor=CENTER)
-        treeview1.grid(column=0, row=0)
+        treeview1.anchor = CENTER
+        treeview1.grid(row=0)
 
-
-        style.configure("Treeview.Heading", fieldbackground="grey")
 
         def onAddClick(id_tab):
             res = self.onAdd(id_tab)
@@ -62,32 +63,33 @@ class MainApp(Tk):
             self.onSubmit(treeview1)
             
         add_button_tab1 = ttk.Button(tab1, text="Добавить", command=partial(onAddClick, 0), width=30)
-        add_button_tab1.grid(row=1, column=0, pady=5)
+        add_button_tab1.grid(row=1, pady=5)
 
         delete_button_tab1 = ttk.Button(tab1, text="Удалить", command=partial(onDeleteClick, 0), width=30)
-        delete_button_tab1.grid(row=2, column=0, pady=5)
+        delete_button_tab1.grid(row=2, pady=5)
 
         submit_button_tab1 = ttk.Button(tab1, text="Подобрать вид спорта", command=onSubmitClick, width=30)
-        submit_button_tab1.grid(row=3, column=0, pady=5)
+        submit_button_tab1.grid(row=3, pady=5)
 
-        treeview2 = ttk.Treeview(tab2, selectmode='browse')
+        tab2.grid_columnconfigure(0, weight=1)
+        treeview2 = ttk.Treeview(tab2, selectmode='browse', show='headings')
 
         treeview2['columns'] = ('if', 'else')
 
-        treeview2.column("#0", width=0,  stretch=NO)
-        treeview2.column("if",anchor=CENTER, width=350)
-        treeview2.column("else",anchor=CENTER,width=350)
+        treeview2.column("if",anchor=CENTER,width=250)
+        treeview2.column("else",anchor=CENTER,width=250)
 
-        treeview2.heading("#0",text="",anchor=CENTER)
         treeview2.heading("if",text="ЕСЛИ",anchor=CENTER)
         treeview2.heading("else",text="ТО",anchor=CENTER)
-        treeview2.grid(column=0, row=0) 
+
+        treeview2.grid(row=0)
 
         add_button_tab2 = ttk.Button(tab2, text="Добавить", command=partial(onAddClick, 1), width=30)
-        add_button_tab2.grid(row=1, column=0, pady=5)
-
+        add_button_tab2.grid(row=1, pady=5)
+        
         delete_button_tab2 = ttk.Button(tab2, text="Удалить", command=partial(onDeleteClick, 1), width=30)
-        delete_button_tab2.grid(row=2, column=0, pady=5)
+        delete_button_tab2.grid(row=2, pady=5)
+
 
         treeview3 = ttk.Treeview(tab3, selectmode='browse')
 
@@ -104,13 +106,13 @@ class MainApp(Tk):
         treeview3.heading("par1",text="Воздействие на выносливость",anchor=CENTER)
         treeview3.heading("par2",text="Воздействие на гибкость",anchor=CENTER)
         treeview3.heading("par3",text="Воздействие на силу",anchor=CENTER)
-        treeview3.grid(column=0, row=0)
+        treeview3.grid(row=0)
 
         add_button_tab3 = ttk.Button(tab3, text="Добавить", command=partial(onAddClick, 2), width=30)
-        add_button_tab3.grid(row=1, column=0, pady=5)
+        add_button_tab3.grid(row=1, pady=5)
 
         delete_button_tab3 = ttk.Button(tab3, text="Удалить", command=partial(onDeleteClick, 2), width=30)
-        delete_button_tab3.grid(row=2, column=0, pady=5)
+        delete_button_tab3.grid(row=2, pady=5)
 
         rules = for_xml.loadXml('rules.xml')
 

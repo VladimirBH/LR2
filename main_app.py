@@ -11,21 +11,23 @@ class MainApp(Tk):
         
     def __init__(self):
         super().__init__()
-        self.title = ""  
+        self.title = " "  
         style = ttk.Style()
         style.theme_use('clam')
         tab_control = ttk.Notebook(self)
-        tab1 = ttk.Frame(tab_control)  
-        tab2 = ttk.Frame(tab_control) 
-        tab3 = ttk.Frame(tab_control)  
+        style.configure('My.TFrame', background='#f4f4f4', borderwidth=0)
+        style.configure('W.TButton', background='#e3e3e3', relief=RIDGE, borderwidth=1)
+        
+        tab1 = ttk.Frame(tab_control, style="My.TFrame")  
+        tab2 = ttk.Frame(tab_control, style="My.TFrame") 
+        tab3 = ttk.Frame(tab_control, style="My.TFrame")
         tab_control.add(tab1, text='Признаки')  
         tab_control.add(tab2, text='Правила')  
         tab_control.add(tab3, text='Виды спорта')
         tab_control.grid(row=0)
         style.configure("Treeview.Heading", background="grey")
 
-        treeview1 = ttk.Treeview(tab1, selectmode='browse', columns='name', show='headings')
-
+        treeview1 = ttk.Treeview(tab1, selectmode='browse', columns='name', show='headings', height=20)
 
         treeview1.column('name',anchor=CENTER, width=700)
 
@@ -61,14 +63,15 @@ class MainApp(Tk):
 
         def onSubmitClick():
             self.onSubmit(treeview1)
-            
-        add_button_tab1 = ttk.Button(tab1, text="Добавить", command=partial(onAddClick, 0), width=30)
+        
+           
+        add_button_tab1 = ttk.Button(tab1, text="Добавить", command=partial(onAddClick, 0), width=30, style='W.TButton')
         add_button_tab1.grid(row=1, pady=5)
 
-        delete_button_tab1 = ttk.Button(tab1, text="Удалить", command=partial(onDeleteClick, 0), width=30)
+        delete_button_tab1 = ttk.Button(tab1, text="Удалить", command=partial(onDeleteClick, 0), width=30, style='W.TButton')
         delete_button_tab1.grid(row=2, pady=5)
 
-        submit_button_tab1 = ttk.Button(tab1, text="Подобрать вид спорта", command=onSubmitClick, width=30)
+        submit_button_tab1 = ttk.Button(tab1, text="Подобрать вид спорта", command=onSubmitClick, width=30, style='W.TButton')
         submit_button_tab1.grid(row=3, pady=5)
 
         tab2.grid_columnconfigure(0, weight=1)

@@ -2,6 +2,7 @@ from math import e
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
+from tkinter import font
 from functools import partial
 from turtle import width
 import for_xml
@@ -11,12 +12,17 @@ class MainApp(Tk):
         
     def __init__(self):
         super().__init__()
-        self.title = " "  
+        default_font = font.nametofont("TkDefaultFont")
+        default_font.configure(size=10)
+        self.resizable(0,0)
+        self.option_add("*Font", default_font)
+        self.title("") 
+        self.iconbitmap(default='transparent.ico')
         style = ttk.Style()
         style.theme_use('clam')
         tab_control = ttk.Notebook(self)
         style.configure('My.TFrame', background='#f4f4f4', borderwidth=0)
-        style.configure('W.TButton', background='#e3e3e3', relief=RIDGE, borderwidth=1)
+        style.configure('W.TButton', background='#e3e3e3', relief=RIDGE, borderwidth=1, width=20, height=2)
         
         tab1 = ttk.Frame(tab_control, style="My.TFrame")  
         tab2 = ttk.Frame(tab_control, style="My.TFrame") 
@@ -25,27 +31,26 @@ class MainApp(Tk):
         tab_control.add(tab2, text='Правила')  
         tab_control.add(tab3, text='Виды спорта')
         tab_control.grid(row=0)
-        style.configure("Treeview.Heading", background="grey")
+        style.configure("Treeview.Heading", background="grey", font=("TkDefaultFont", 10))
 
-        treeview1 = ttk.Treeview(tab1, selectmode='browse', columns='name', show='headings', height=20)
+        treeview1 = ttk.Treeview(tab1, selectmode='browse', columns='name', show="")
 
-        treeview1.column('name',anchor=CENTER, width=700)
-
-        treeview1.heading('name',text="Признаки",anchor=CENTER)
+        treeview1.column('name',anchor='w', width=700)
         treeview1.anchor = CENTER
         treeview1.grid(row=0)
 
 
         def onAddClick(id_tab):
             res = self.onAdd(id_tab)
-            if id_tab == 0:
-                treeview1.insert(parent='',index='end', text='', values=(res,))
-            elif id_tab == 1:
-                treeview2.insert(parent='',index='end',text='',values=(res['attrib']['if'],res['attrib']['else']))
-            elif id_tab == 2:
-                treeview3.insert(parent='',index='end',text='',values=(res['attrib']['name'], res['subelements'][0]['text'], 
-                                                                       res['subelements'][1]['text'], 
-                                                                       res['subelements'][2]['text']))
+            if res != None:
+                if id_tab == 0:
+                    treeview1.insert(parent='',index='end', text='', values=(res,))
+                elif id_tab == 1:
+                    treeview2.insert(parent='',index='end',text='',values=(res['attrib']['if'],res['attrib']['else']))
+                elif id_tab == 2:
+                    treeview3.insert(parent='',index='end',text='',values=(res['attrib']['name'], res['subelements'][0]['text'], 
+                                                                        res['subelements'][1]['text'], 
+                                                                        res['subelements'][2]['text']))
 
 
         def onDeleteClick(id_tab):
@@ -65,13 +70,13 @@ class MainApp(Tk):
             self.onSubmit(treeview1)
         
            
-        add_button_tab1 = ttk.Button(tab1, text="Добавить", command=partial(onAddClick, 0), width=30, style='W.TButton')
+        add_button_tab1 = ttk.Button(tab1, text="Добавить", command=partial(onAddClick, 0), style='W.TButton')
         add_button_tab1.grid(row=1, pady=5)
 
-        delete_button_tab1 = ttk.Button(tab1, text="Удалить", command=partial(onDeleteClick, 0), width=30, style='W.TButton')
+        delete_button_tab1 = ttk.Button(tab1, text="Удалить", command=partial(onDeleteClick, 0), style='W.TButton')
         delete_button_tab1.grid(row=2, pady=5)
 
-        submit_button_tab1 = ttk.Button(tab1, text="Подобрать вид спорта", command=onSubmitClick, width=30, style='W.TButton')
+        submit_button_tab1 = ttk.Button(tab1, text="Подобрать вид спорта", command=onSubmitClick, style='W.TButton')
         submit_button_tab1.grid(row=3, pady=5)
 
         tab2.grid_columnconfigure(0, weight=1)
@@ -87,10 +92,10 @@ class MainApp(Tk):
 
         treeview2.grid(row=0)
 
-        add_button_tab2 = ttk.Button(tab2, text="Добавить", command=partial(onAddClick, 1), width=30)
+        add_button_tab2 = ttk.Button(tab2, text="Добавить", command=partial(onAddClick, 1), style='W.TButton')
         add_button_tab2.grid(row=1, pady=5)
         
-        delete_button_tab2 = ttk.Button(tab2, text="Удалить", command=partial(onDeleteClick, 1), width=30)
+        delete_button_tab2 = ttk.Button(tab2, text="Удалить", command=partial(onDeleteClick, 1), style='W.TButton')
         delete_button_tab2.grid(row=2, pady=5)
 
 
@@ -111,10 +116,10 @@ class MainApp(Tk):
         treeview3.heading("par3",text="Воздействие на силу",anchor=CENTER)
         treeview3.grid(row=0)
 
-        add_button_tab3 = ttk.Button(tab3, text="Добавить", command=partial(onAddClick, 2), width=30)
+        add_button_tab3 = ttk.Button(tab3, text="Добавить", command=partial(onAddClick, 2), style='W.TButton')
         add_button_tab3.grid(row=1, pady=5)
 
-        delete_button_tab3 = ttk.Button(tab3, text="Удалить", command=partial(onDeleteClick, 2), width=30)
+        delete_button_tab3 = ttk.Button(tab3, text="Удалить", command=partial(onDeleteClick, 2), style='W.TButton')
         delete_button_tab3.grid(row=2, pady=5)
 
         rules = for_xml.loadXml('rules.xml')
@@ -138,7 +143,7 @@ class MainApp(Tk):
     def onAdd(self, id_tab):
         add_window = Toplevel(self)
         if id_tab == 0:
-            add_window.title = "Добавить необходимое свойство"
+            add_window.title("Добавить необходимое свойство")
             text_box = Entry(add_window, width=50)
             text_box.grid(row=0, column=0, padx=20, pady=20)
 
@@ -158,7 +163,7 @@ class MainApp(Tk):
             add_window.wait_window()
             return result
         elif id_tab == 1:
-            add_window.title = "Добавить правило"
+            add_window.title("Добавить правило")
             text_box_if = Entry(add_window, width=50)
             text_box_if.grid(row=0, column=0, padx=20, pady=20)
             text_box_else = Entry(add_window, width=50)
@@ -188,7 +193,7 @@ class MainApp(Tk):
             add_window.wait_window()
             return result
         elif id_tab == 2:
-            add_window.title = "Добавить вид спорта"
+            add_window.title("Добавить вид спорта")
             text_box_name = Entry(add_window, width=50)
             text_box_name.grid(row=0, column=0, padx=20, pady=20)
 
@@ -261,8 +266,11 @@ class MainApp(Tk):
 
 
     def onSubmit(self, treeview: ttk.Treeview):
-        rules = self.loadXml('rules.xml')
-        sport_types = self.loadXml('types_of_sports.xml')
+        if len(treeview.get_children()) == 0:
+            messagebox.showerror("Ошибка", "Укажите признаки")
+            return
+        rules = for_xml.loadXml('rules.xml')
+        sport_types = for_xml.loadXml('types_of_sports.xml')
         advices = []
         for line in treeview.get_children():
             for sign in treeview.item(line)['values']:
@@ -294,11 +302,9 @@ class MainApp(Tk):
 
     def windowResult(self, suitable_sport):
         add_window = Toplevel(self)
-        add_window.geometry("200X100")
-        add_window.title = "Подходящие виды спорта"
-        treeview = ttk.Treeview(add_window, columns=('name'))
-        treeview.column("#0", width=0)
-        treeview.column("name",anchor=CENTER, width=700)
+        add_window.title("Подходящие виды спорта")
+        treeview = ttk.Treeview(add_window, columns=('name'), show="")
+        treeview.column("name",anchor=CENTER,)
         treeview.grid(column=0, row=0) 
 
         for sport_type in suitable_sport:
